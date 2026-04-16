@@ -4,18 +4,24 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, '../public')));
+// Serve static files from the React client build directory
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// Simple API endpoint
+// API endpoint (to keep our automated tests passing)
 app.get('/api/status', (req, res) => {
-  res.json({ status: 'online', message: 'Student Portal is running smoothly!' });
+  res.json({ status: 'online', message: 'Student Portal API is operational.' });
 });
 
-// Start the server only if this file is run directly (not in tests)
+// For any other routes, let React handle the routing by serving index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+// Start the server only if this file is run directly
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Express server is running on http://localhost:${PORT}`);
+    console.log(`Serving React SPA from ../client/dist`);
   });
 }
 

@@ -1,20 +1,28 @@
-# Use an official Node runtime as a parent image
+# ---------- STAGE 1: React Build ----------
+FROM node:18-alpine AS client-build
+
+WORKDIR /usr/src/app/client
+COPY client/package*.json ./
+RUN npm install
+COPY client/ ./
+RUN npm run build
+
+# ---------- STAGE 2: Express Server ----------
 FROM node:18-alpine
 
-# Set the working directory in the container
 WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json (if available)
+# Copy backend dependencies
 COPY package*.json ./
-
-# Install application dependencies for production
 RUN npm install --production
 
-# Copy the rest of your application's code
-COPY . .
+# Copy backend source
+COPY src/ ./src/
 
-# Expose the port the app runs on
+# Copy compiled React app from STAGE 1
+COPY --from=client-build /usr/src/app/client/dist ./client/dist
+
+# Expose the API port
 EXPOSE 3000
 
-# Define the command to run your app
+# Start the Express server
 CMD ["node", "src/server.js"]
