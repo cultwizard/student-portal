@@ -26,11 +26,11 @@ jobs:
     - name: Install Express server dependencies
       run: npm ci
 
-    - name: Run Express Server Tests
-      run: npm test
-
     - name: Ensure React client compiles correctly
       run: npm run build:client
+
+    - name: Run Express Server Tests
+      run: npm test
 
   docker-build:
     needs: build-and-test

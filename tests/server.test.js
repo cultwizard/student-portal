@@ -13,6 +13,6 @@ describe('Student Portal API', () => {
     const res = await request(app).get('/api/status');
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('status', 'online');
-    expect(res.body).toHaveProperty('message', 'Student Portal is running smoothly!');
+    expect(res.body).toHaveProperty('message', 'Student Portal API is operational.');
   });
 });
